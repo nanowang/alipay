@@ -180,6 +180,22 @@ module Alipay
       request_uri(params, options).to_s
     end
 
+    # 支付宝快捷登录
+    QUICK_LOGIN_REQUIRED_PARAMS = %w( return_url )
+    def self.quick_login(params, options = {})
+      params = Utils.stringify_keys(params)
+      check_required_params(params, QUICK_LOGIN_REQUIRED_PARAMS)
+
+      params = {
+        'service'        => 'alipay.auth.authorize',
+        'target_service' => 'user.auth.quick.login',
+        '_input_charset' => 'utf-8',
+        'partner'        => options[:pid] || Alipay.pid,
+      }.merge(params)
+
+      request_uri(params, options).to_s
+    end
+
     def self.request_uri(params, options = {})
       uri = URI(GATEWAY_URL)
       uri.query = URI.encode_www_form(sign_params(params, options))
